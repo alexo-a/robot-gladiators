@@ -28,8 +28,9 @@ var fightOrSkip = function() {
     if (confirmSkip) {
       window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
-      playerInfo.playerMoney = playerInfo.money - 10;
-      shop();
+      playerInfo.money = playerInfo.money - 10;
+      console.log("skipped fight. player's money: " + playerInfo.money);
+      //shop();
       return true;
     }
   }
@@ -112,11 +113,15 @@ var fight = function(enemy) {
 
 // function to start a new game
 var startGame = function () {
-
+  if (!localStorage.getItem("name")) {
+    localStorage.setItem("name", "none");
+    localStorage.setItem("score", "0");
+  }
   // reset player stats
   playerInfo.reset();
   for (var i = 0; i < enemyInfo.length; i++) {
     if (playerInfo.health > 0) {
+      console.log("begin round " + (i + 1));
       window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
       var pickedEnemyObj = enemyInfo[i];
 
@@ -154,6 +159,17 @@ var endGame = function () {
   // if player is still alive, player wins!
   if (playerInfo.health > 0) {
     window.alert("Great job, you've survived the game! You now have a score of " + playerInfo.money + ".");
+    var pastHSName = localStorage.getItem("name");
+    var pastHSScore = localStorage.getItem("score");
+    if (playerInfo.money > parseInt(pastHSScore)){
+      //new high score
+      window.alert("You are the new score leader! You beat " + pastHSName + "'s score of " + pastHSScore + "!");
+      localStorage.setItem("name", playerInfo.name);
+      localStorage.setItem("score", playerInfo.money);
+    }
+    else {
+      window.alert("Sorry, you didn't beat " + pastHSName + "'s score of " + pastHSScore + ".");
+    }
   }
   else {
     window.alert("You've lost your robot in battle.");
